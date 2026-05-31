@@ -123,6 +123,12 @@ Use exactly these sections:
 ## After writing
 
 - Keep it honest and short — this is a planning doc, not a design spec.
+- **Link the new plan from `CLAUDE.md`.** If a `CLAUDE.md` exists at the repo
+  root and has a "Docs" section (the boilerplate ships one), add a bullet linking
+  `docs/requirements/technical-plan.md` there. The boilerplate keeps `CLAUDE.md`
+  as the navigable index of governance docs, so an unlinked plan is effectively
+  invisible to the next agent turn — this single line keeps the index honest.
+  This is the only `CLAUDE.md` edit you make; do not touch its other sections.
 - Tell the user the file path and summarize the MVP slice in 2–3 sentences.
 - Suggest (do not auto-create) the first `docs/requirements/feature-002-*.md`
   so the user starts Module 4 with a clear first feature.
