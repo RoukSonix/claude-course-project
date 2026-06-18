@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI-агенти · Підсумок курсу та карта лупа</title>
+<style>
+  :root{
+    --bg:#faf9f5; --bg2:#f2ede3; --card:#ffffff; --line:#e7e1d5;
+    --ink:#1a1815; --mut:#6e675c; --acc:#bd5b3d; --acc2:#d97757;
+    --maxw:1080px; --r:16px; --shadow:0 10px 34px rgba(80,60,45,.10);
+    font-synthesis:none;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,sans-serif;
+    line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  .deck{scroll-snap-type:y mandatory; height:100vh; overflow-y:scroll}
+  .slide{
+    scroll-snap-align:start; min-height:100vh; display:flex; align-items:center;
+    justify-content:center; padding:64px 28px; position:relative;
+  }
+  .slide:nth-child(even){background:var(--bg2)}
+  .wrap{width:100%; max-width:var(--maxw); margin:0 auto}
+  .kicker{
+    font-size:13px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--acc); margin:0 0 14px; font-weight:600;
+  }
+  h1,h2,h3{font-family:"Tiempos Text",Georgia,"Times New Roman",serif}
+  h1{font-size:clamp(36px,6vw,66px); line-height:1.05; margin:0 0 18px; letter-spacing:-.015em; font-weight:600}
+  h2{font-size:clamp(27px,4vw,44px); margin:0 0 10px; letter-spacing:-.01em; font-weight:600}
+  h3{font-size:18px; margin:0 0 6px; font-weight:600}
+  p{color:var(--ink)} .mut{color:var(--mut)}
+  .lead{font-size:clamp(17px,2.2vw,22px); color:var(--mut); max-width:760px}
+  .pill{display:inline-block; padding:6px 12px; border:1px solid var(--line);
+    border-radius:999px; font-size:13px; color:var(--mut); background:var(--card)}
+  .grid{display:grid; gap:16px}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  @media(max-width:820px){.g2,.g3{grid-template-columns:1fr}}
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--r);
+    padding:20px; box-shadow:var(--shadow);
+  }
+  .card .tag{font-size:12px; color:var(--acc); letter-spacing:.08em; text-transform:uppercase; font-weight:600}
+  .card.mod .n{font-size:13px; color:var(--acc); font-weight:700; letter-spacing:.04em}
+  .card ul{margin:10px 0 0; padding-left:18px; color:var(--mut); font-size:14.5px}
+  .card ul li{margin:4px 0}
+  .topics{gap:14px}
+  .topic{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px; box-shadow:var(--shadow)}
+  .topic b{display:block; font-size:15px; color:var(--ink); margin-bottom:3px}
+  .topic span{color:var(--mut); font-size:13px; line-height:1.4}
+  .skill .s-name{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; color:var(--acc); font-size:15px}
+  /* loop diagram */
+  .loop{display:grid; grid-template-columns:1.18fr .82fr; gap:30px; align-items:center}
+  @media(max-width:900px){.loop{grid-template-columns:1fr}}
+  .legend{list-style:none; margin:0; padding:0}
+  .legend li{display:flex; gap:14px; padding:12px 0; border-bottom:1px solid var(--line)}
+  .legend li:last-child{border-bottom:0}
+  .legend .num{flex:0 0 30px; height:30px; border-radius:8px; display:grid; place-items:center;
+    background:linear-gradient(180deg,var(--acc2),var(--acc)); color:#fdf3ee; font-weight:800}
+  .legend .lt b{display:block; font-size:16.5px}
+  .legend .lt span{color:var(--mut); font-size:14.5px}
+  .legend code{background:#faf7f1; border:1px solid var(--line); border-radius:6px; padding:1px 6px;
+    color:var(--acc); font-size:13.5px}
+  .legend li{padding:13px 0}
+  svg{width:100%; height:auto; display:block}
+  /* checklist */
+  .check{list-style:none; margin:0; padding:0; counter-reset:c}
+  .check li{counter-increment:c; display:flex; gap:16px; align-items:flex-start;
+    padding:16px 18px; background:var(--card); border:1px solid var(--line);
+    border-radius:12px; margin-bottom:12px; box-shadow:var(--shadow)}
+  .check li::before{content:counter(c); flex:0 0 34px; height:34px; border-radius:9px;
+    display:grid; place-items:center; background:#faf3ef; border:1px solid #ecd9d0;
+    color:var(--acc); font-weight:800}
+  .check b{font-size:16.5px} .check .d{color:var(--mut); font-size:14px; margin-top:2px}
+  .check code{background:#faf7f1; border:1px solid var(--line); border-radius:6px; padding:1px 6px; color:var(--acc); font-size:13px}
+  .nav{position:fixed; right:18px; top:50%; transform:translateY(-50%); display:flex;
+    flex-direction:column; gap:10px; z-index:20}
+  .nav a{width:10px; height:10px; border-radius:50%; background:#dcd5c7; display:block; transition:.2s}
+  .nav a.active{background:var(--acc2); transform:scale(1.35)}
+  .foot{position:fixed; left:18px; bottom:14px; font-size:12px; color:#a79f90; z-index:20}
+  .row{display:flex; gap:10px; flex-wrap:wrap; margin-top:18px}
+  .hint{font-size:13px; color:var(--mut); margin-top:26px}
+  .accent{color:var(--acc)}
+  code{color:var(--acc)}
+  @media print{.deck{height:auto;overflow:visible}.slide{min-height:auto;page-break-after:always}.nav,.foot{display:none}}
+</style>
+</head>
+<body>
+<nav class="nav" id="nav"></nav>
+<div class="foot">Стрілки ← → / ↑ ↓ — навігація. Можна гортати або роздрукувати (Ctrl/Cmd+P).</div>
+
+<div class="deck" id="deck">
+
+  <!-- 1 · Cover -->
+  <section class="slide" data-title="Старт">
+    <div class="wrap">
+      <p class="kicker">AI-агенти · фінал курсу</p>
+      <h1>Від ідеї до прода —<br>і <span class="accent">луп</span>, який це робить.</h1>
+      <p class="lead">Підсумок восьми занять, карта робочого циклу (loop-інженерія),
+        візуалізація скілів і короткий чек-ліст розробки. Це матеріал «на майбутнє» —
+        відкривайте офлайн, повертайтесь, коли почнете наступний проєкт.</p>
+      <div class="row">
+        <span class="pill">8 модулів</span>
+        <span class="pill">3 поверхні Claude</span>
+        <span class="pill">1 робочий цикл</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 · The loop (live today) -->
+  <section class="slide" data-title="Луп">
+    <div class="wrap">
+      <p class="kicker">Суть loop-інженерії</p>
+      <h2>Не «один великий промпт», а <span class="accent">цикл із критерієм</span></h2>
+      <p class="lead" style="margin-bottom:26px">Ми ніколи не просили агента зробити все за раз.
+        Ми ставили маленьку ціль з ознакою готовності, агент робив крок, ми перевіряли, виправляли —
+        і повторювали, поки критерій не виконано. Це і є loop-інженерія: будувати роботу так,
+        щоб кожен прохід можна було <b>перевірити</b>.</p>
+
+      <div class="loop">
+        <svg viewBox="0 0 800 600" role="img" aria-label="Цикл розробки">
+          <defs>
+            <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="#d97757"/>
+            </marker>
+            <linearGradient id="node" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#f6f1e8"/>
+            </linearGradient>
+          </defs>
+          <!-- guide ring -->
+          <circle cx="400" cy="300" r="220" fill="none" stroke="#e2dac9" stroke-width="2" stroke-dasharray="3 9"/>
+          <!-- center cycle arrow -->
+          <path d="M460,196 A120,120 0 1 1 287,259" fill="none" stroke="#d97757" stroke-width="5" marker-end="url(#ah)" opacity=".95"/>
+          <text x="400" y="295" text-anchor="middle" fill="#bd5b3d" font-size="22" font-weight="800" letter-spacing="2">ЦИКЛ</text>
+          <text x="400" y="322" text-anchor="middle" fill="#6e675c" font-size="15">повторюй, поки готово</text>
+
+          <!-- nodes: cx,cy -->
+          <!-- 1 Ідея (400,80) -->
+          <g><circle cx="400" cy="80" r="58" fill="url(#node)" stroke="#e4dccb" stroke-width="2"/>
+            <text x="400" y="86" text-anchor="middle" fill="#bd5b3d" font-size="33" font-weight="800" dy="6">1</text>
+            <text x="400" y="20" text-anchor="middle" fill="#1a1815" font-size="20" font-weight="700">Ідея</text></g>
+          <!-- 2 План (590,190) -->
+          <g><circle cx="590" cy="190" r="58" fill="url(#node)" stroke="#e4dccb" stroke-width="2"/>
+            <text x="590" y="196" text-anchor="middle" fill="#bd5b3d" font-size="33" font-weight="800" dy="6">2</text>
+            <text x="668" y="186" text-anchor="start" fill="#1a1815" font-size="20" font-weight="700">План</text></g>
+          <!-- 3 Декомпозиція (590,410) -->
+          <g><circle cx="590" cy="410" r="58" fill="url(#node)" stroke="#e4dccb" stroke-width="2"/>
+            <text x="590" y="416" text-anchor="middle" fill="#bd5b3d" font-size="33" font-weight="800" dy="6">3</text>
+            <text x="660" y="414" text-anchor="start" fill="#1a1815" font-size="20" font-weight="700">Декомпозиція</text></g>
+          <!-- 4 Збірка (400,520) -->
+          <g><circle cx="400" cy="520" r="58" fill="url(#node)" stroke="#e4dccb" stroke-width="2"/>
+            <text x="400" y="526" text-anchor="middle" fill="#bd5b3d" font-size="33" font-weight="800" dy="6">4</text>
+            <text x="400" y="588" text-anchor="middle" fill="#1a1815" font-size="20" font-weight="700">Збірка</text></g>
+          <!-- 5 Тест (210,410) -->
+          <g><circle cx="210" cy="410" r="58" fill="url(#node)" stroke="#e4dccb" stroke-width="2"/>
+            <text x="210" y="416" text-anchor="middle" fill="#bd5b3d" font-size="33" font-weight="800" dy="6">5</text>
+            <text x="144" y="414" text-anchor="end" fill="#1a1815" font-size="20" font-weight="700">Тест</text></g>
+          <!-- 6 Деплой (210,190) -->
+          <g><circle cx="210" cy="190" r="58" fill="url(#node)" stroke="#e4dccb" stroke-width="2"/>
+            <text x="210" y="196" text-anchor="middle" fill="#bd5b3d" font-size="33" font-weight="800" dy="6">6</text>
+            <text x="132" y="186" text-anchor="end" fill="#1a1815" font-size="20" font-weight="700">Деплой</text></g>
+
+          <!-- inner tight loop label 4<->5 -->
+          <text x="300" y="500" text-anchor="middle" fill="#bd5b3d" font-size="12.5" font-weight="600">виправ і повтори</text>
+        </svg>
+
+        <ul class="legend">
+          <li><span class="num">1</span><span class="lt"><b>Ідея</b><span>один сценарій, чіткий вхід і вихід — нічого зайвого</span></span></li>
+          <li><span class="num">2</span><span class="lt"><b>План</b><span>скіл <code>plan-project</code> → <code>PLAN.md</code>: стек, віхи, критерії готовності</span></span></li>
+          <li><span class="num">3</span><span class="lt"><b>Декомпозиція</b><span>3–5 задач (issues) у репозиторії; скіл <code>feature-dev</code> описує фічу</span></span></li>
+          <li><span class="num">4</span><span class="lt"><b>Збірка</b><span>крок за кроком у Claude Code; свої скіли через <code>skill-creator</code>; паралельно — worktrees</span></span></li>
+          <li><span class="num">5</span><span class="lt"><b>Тест</b><span>перевірка кожної зміни: тести, <code>code-review</code>, тест браузером через інтеграцію з Chrome у Claude Code</span></span></li>
+          <li><span class="num">6</span><span class="lt"><b>Деплой</b><span>гілка → PR → merge → <code>Vercel</code> → наступна фіча</span></span></li>
+        </ul>
+      </div>
+      <p class="hint"><b class="accent">Внутрішній луп</b> — найтугіший: <b>Збірка ⇄ Тест ⇄ Виправлення</b>.
+        Саме він економить час: фіксуємо конкретну ваду точковим промптом, а не переписуємо все з нуля.</p>
+    </div>
+  </section>
+
+  <!-- 3 · Skills map -->
+  <section class="slide" data-title="Скіли">
+    <div class="wrap">
+      <p class="kicker">Скіли = багаторазові кроки лупа</p>
+      <h2>Що ми клали на кожну станцію</h2>
+      <p class="lead" style="margin-bottom:24px">Скіл — це збережений фаховий промпт із власними файлами.
+        Замість переписувати інструкцію щоразу, ви викликаєте <code>/назву</code> — і агент робить велику роботу однаково добре.</p>
+      <div class="grid g3">
+        <div class="card skill"><span class="tag">План</span><h3 class="s-name">plan-project</h3>
+          <p class="mut" style="font-size:14px">Перетворюємо ідею на структурований план, розбиваючи задачі на дрібні частини із залежностями.</p></div>
+        <div class="card skill"><span class="tag">Свої скіли</span><h3 class="s-name">skill-creator</h3>
+          <p class="mut" style="font-size:14px">Будує ваш власний скіл — витяг даних або веб/UI — і сам тестує й допрацьовує його.</p></div>
+        <div class="card skill"><span class="tag">Декомпозиція</span><h3 class="s-name">feature-dev</h3>
+          <p class="mut" style="font-size:14px">Описує наступну фічу чітко, щоб її можна було віддати агенту як задачу.</p></div>
+        <div class="card skill"><span class="tag">Перевірка</span><h3 class="s-name">code-review</h3>
+          <p class="mut" style="font-size:14px">Друга пара очей: знаходить вади й слабкі місця до того, як вони підуть у прод.</p></div>
+        <div class="card skill"><span class="tag">Вигляд</span><h3 class="s-name">frontend-design</h3>
+          <p class="mut" style="font-size:14px">Один запуск — і «сирий» інтерфейс стає охайним продуктом, без ручного CSS.</p></div>
+        <div class="card skill"><span class="tag">Клей-автоматизація</span><h3 class="s-name">gh CLI</h3>
+          <p class="mut" style="font-size:14px">GitHub прямо з агента: репозиторій, issues, PR, merge — скриптовано й відтворювано.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 · Themes -->
+  <section class="slide" data-title="Теми">
+    <div class="wrap">
+      <p class="kicker">Що тепер у вашому арсеналі</p>
+      <h2>Теми, які ви опанували</h2>
+      <div class="grid g3 topics">
+        <div class="topic"><b>Три поверхні Claude</b><span>Chat, Cowork, Claude Code</span></div>
+        <div class="topic"><b>Від промптів до скілів</b><span>повторюване зберігаєш як named-скіл</span></div>
+        <div class="topic"><b>Свої скіли</b><span>skill-creator будує і сам тестує їх</span></div>
+        <div class="topic"><b>Google Docs / Sheets / Gmail</b><span>робота з документами прямо з агента</span></div>
+        <div class="topic"><b>Планування проєкту</b><span>PLAN.md: стек, віхи, критерії готовності</span></div>
+        <div class="topic"><b>Декомпозиція на задачі</b><span>велику ціль ріжемо на issues</span></div>
+        <div class="topic"><b>Збірка задача-за-задачею</b><span>промпт → результат → виправ → повтори</span></div>
+        <div class="topic"><b>Зовнішній AI по ключу</b><span>OpenRouter, секрети лише в env</span></div>
+        <div class="topic"><b>Тест через агента + браузер</b><span>інтеграція з Chrome у Claude Code</span></div>
+        <div class="topic"><b>Git для роботи з агентом</b><span>гілки, worktrees, PR, merge</span></div>
+        <div class="topic"><b>Деплой у прод</b><span>Vercel — публічний URL</span></div>
+        <div class="topic"><b>Оновлення інтерфейсу</b><span>один скіл — охайний UI</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · Checklist -->
+  <section class="slide" data-title="Чек-ліст">
+    <div class="wrap">
+      <p class="kicker">Зберіть у закладки</p>
+      <h2>Чек-ліст: з чого починати наступний проєкт</h2>
+      <p class="lead" style="margin-bottom:22px">Той самий луп, але як список дій. Пройдіть зверху вниз — і у вас є робоча розробка, а не «купа коду».</p>
+      <ol class="check">
+        <li><div><b>Ідея</b><div class="d">Один основний сценарій. Чіткий вхід, чіткий вихід. Усе більше — ріжемо.</div></div></li>
+        <li><div><b>План</b><div class="d">Скіл <code>plan-project</code> → <code>PLAN.md</code>: простий стек, 3–5 віх, критерії «готово».</div></div></li>
+        <li><div><b>Декомпозиція на задачі</b><div class="d">Розбити на 3–5 issues у репозиторії. Скіл <code>feature-dev</code> описує кожну фічу.</div></div></li>
+        <li><div><b>Збірка зі скілами</b><div class="d">Крок за кроком у Claude Code. Перевикористовуйте скіли; складне — паралельно у worktrees.</div></div></li>
+        <li><div><b>Тестування</b><div class="d">Перевіряйте кожну зміну: тести, <code>code-review</code>, тест браузером через інтеграцію з Chrome у Claude Code. Виправляйте точково, не переписуйте все.</div></div></li>
+        <li><div><b>Деплой</b><div class="d">Гілка → PR → merge → Vercel. Секрети лише в env. Далі — наступна фіча.</div></div></li>
+      </ol>
+    </div>
+  </section>
+
+
+</div>
+
+<script>
+  const deck=document.getElementById('deck');
+  const slides=[...document.querySelectorAll('.slide')];
+  const nav=document.getElementById('nav');
+  slides.forEach((s,i)=>{const a=document.createElement('a');a.href='#';a.title=s.dataset.title||('Слайд '+(i+1));
+    a.addEventListener('click',e=>{e.preventDefault();s.scrollIntoView({behavior:'smooth'})});nav.appendChild(a)});
+  const dots=[...nav.children];
+  let active=0;
+  const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){
+    active=slides.indexOf(e.target);dots.forEach((d,j)=>d.classList.toggle('active',j===active));}})},{threshold:.55});
+  slides.forEach(s=>io.observe(s));
+  function go(d){const n=Math.min(slides.length-1,Math.max(0,active+d));slides[n].scrollIntoView({behavior:'smooth'})}
+  addEventListener('keydown',e=>{
+    if(['ArrowDown','ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();go(1)}
+    if(['ArrowUp','ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(-1)}
+  });
+</script>
+</body>
+</html>
